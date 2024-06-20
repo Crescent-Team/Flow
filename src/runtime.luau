@@ -83,6 +83,7 @@ local function update_root(Root: FlowRoot)
 	local length = #dependents
 
 	Root.dependents = {}
+	local _ = #Root.dependents
 	SharedContext.CurrentSession += 1
 
 	for index = length, 1, -1 do
