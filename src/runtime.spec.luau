@@ -17,7 +17,7 @@ TEST("Runtime::add_dependency", function()
 			value = nil,
 			type = "Root",
 			dependents = {},
-			dependentsLength = 0
+			dependentsLength = 0,
 		}
 		local node = {
 			type = "Node",
@@ -38,7 +38,7 @@ TEST("Runtime::add_dependency", function()
 			value = nil,
 			type = "Root",
 			dependents = {},
-			dependentsLength = 0
+			dependentsLength = 0,
 		}
 		local node = {
 			type = "Node",
@@ -117,7 +117,7 @@ TEST("Runtime::update_node", function()
 			value = nil,
 			type = "Root",
 			dependents = {},
-			dependentsLength = 0
+			dependentsLength = 0,
 		}
 		local node = {
 			type = "Node",

@@ -11,7 +11,7 @@ export type FlowRoot = FlowVariable<any> & {
 
 export type FlowNode = FlowVariable<any> & {
 	type: "Node",
-	roots: { [FlowRoot]: boolean},
+	roots: { [FlowRoot]: boolean },
 	updaterSession: number,
 	recompute: () -> any,
 }
