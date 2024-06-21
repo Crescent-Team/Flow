@@ -1,5 +1,4 @@
 --!strict
-
 export type FlowVariable<T> = {
 	value: T,
 }
@@ -7,11 +6,12 @@ export type FlowVariable<T> = {
 export type FlowRoot = FlowVariable<any> & {
 	type: "Root",
 	dependents: { FlowNode },
+	dependentsLength: number,
 }
 
 export type FlowNode = FlowVariable<any> & {
 	type: "Node",
-	roots: { FlowRoot },
+	roots: { [FlowRoot]: boolean},
 	updaterSession: number,
 	recompute: () -> any,
 }
@@ -31,11 +31,13 @@ local SharedContext: SharedContext = { CurrentNode = nil, CurrentSession = 0 }
 local function add_dependency(dependency: Dependency, dependent: Dependent)
 	if dependency.type == "Root" then
 		table.insert(dependency.dependents, dependent)
-		table.insert(dependent.roots, dependency)
+		dependency.dependentsLength += 1
+		dependent.roots[dependency] = true
 	else
-		for _, root in dependency.roots do
+		for root in dependency.roots do
 			table.insert(root.dependents, dependent)
-			table.insert(dependent.roots, root)
+			root.dependentsLength += 1
+			dependent.roots[root] = true
 		end
 	end
 end
@@ -80,9 +82,10 @@ end
 
 local function update_root(Root: FlowRoot)
 	local dependents = Root.dependents
-	local length = #dependents
+	local length = Root.dependentsLength
 
 	Root.dependents = {}
+	Root.dependentsLength = 0
 	local _ = #Root.dependents
 	SharedContext.CurrentSession += 1
 

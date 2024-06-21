@@ -17,6 +17,7 @@ TEST("Runtime::add_dependency", function()
 			value = nil,
 			type = "Root",
 			dependents = {},
+			dependentsLength = 0
 		}
 		local node = {
 			type = "Node",
@@ -28,7 +29,7 @@ TEST("Runtime::add_dependency", function()
 
 		add_dependency(root, node)
 		CHECK(root.dependents[1] == node)
-		CHECK(node.roots[1] == root)
+		CHECK(node.roots[root] ~= nil)
 	end
 
 	do
@@ -37,6 +38,7 @@ TEST("Runtime::add_dependency", function()
 			value = nil,
 			type = "Root",
 			dependents = {},
+			dependentsLength = 0
 		}
 		local node = {
 			type = "Node",
@@ -57,7 +59,7 @@ TEST("Runtime::add_dependency", function()
 		add_dependency(root, node)
 		add_dependency(node, innerNode)
 		CHECK(root.dependents[2] == innerNode)
-		CHECK(innerNode.roots[1] == root)
+		CHECK(innerNode.roots[root] ~= nil)
 	end
 end)
 
@@ -115,6 +117,7 @@ TEST("Runtime::update_node", function()
 			value = nil,
 			type = "Root",
 			dependents = {},
+			dependentsLength = 0
 		}
 		local node = {
 			type = "Node",
@@ -141,9 +144,9 @@ TEST("Runtime::update_node", function()
 
 		update_root(root)
 		CHECK(root.dependents[2] == innerNode)
-		CHECK(innerNode.roots[1] == root)
+		CHECK(innerNode.roots[root] ~= nil)
 		CHECK(root.dependents[1] == node)
-		CHECK(node.roots[1] == root)
+		CHECK(node.roots[root] ~= nil)
 	end
 end)
 FINISH()
