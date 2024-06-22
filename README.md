@@ -1,4 +1,4 @@
-# Flow
+# Potok
 
 An in-development reactive library with support for all Luau platforms. 
 

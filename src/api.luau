@@ -11,7 +11,7 @@ export type Reader<T> = () -> T
 export type Writer<T> = (T) -> ()
 export type ReaderWriter<T> = Reader<T> & Writer<T>
 
-local GET_FLOW_INSTANCE = {}
+local GET_POTOK_INSTANCE = {}
 
 local function source<T>(value: T): ReaderWriter<T>
 	local self = {
@@ -25,7 +25,7 @@ local function source<T>(value: T): ReaderWriter<T>
 			return self.value
 		end
 
-		if value == GET_FLOW_INSTANCE then
+		if value == GET_POTOK_INSTANCE then
 			return self :: any
 		end
 		self.value = value
@@ -46,7 +46,7 @@ local function computed<T>(processor: () -> T): Reader<T>
 	evaluate_this_node(self)
 
 	return function(value: any)
-		if value == GET_FLOW_INSTANCE then
+		if value == GET_POTOK_INSTANCE then
 			return self :: any
 		end
 
@@ -67,7 +67,7 @@ local function effect(runner)
 end
 
 local function use<T>(dependency: ReaderWriter<T>): T
-	return _use(dependency(GET_FLOW_INSTANCE :: any))
+	return _use(dependency(GET_POTOK_INSTANCE :: any))
 end
 
 return {

@@ -1,43 +1,45 @@
 --!strict
-export type FlowVariable<T> = {
+export type PotokVariable<T> = {
 	value: T,
 }
 
-export type FlowRoot = FlowVariable<any> & {
+export type PotokRoot = PotokVariable<any> & {
 	type: "Root",
-	dependents: { FlowNode },
+	dependents: { PotokNode },
 	dependentsLength: number,
 }
 
-export type FlowNode = FlowVariable<any> & {
+export type PotokNode = PotokVariable<any> & {
 	type: "Node",
-	roots: { [FlowRoot]: boolean },
+	roots: { [PotokRoot]: boolean },
 	updaterSession: number,
 	recompute: () -> any,
 }
 
 export type SharedContext = {
-	CurrentNode: FlowNode?,
+	CurrentNode: PotokNode?,
 	CurrentSession: number,
 }
 
-export type SafeSharedContext = SharedContext & { CurrentNode: FlowNode }
+export type SafeSharedContext = SharedContext & { CurrentNode: PotokNode }
 
-export type Dependency = FlowNode | FlowRoot
-export type Dependent = FlowNode
+export type Dependency = PotokNode | PotokRoot
+export type Dependent = PotokNode
 
 local SharedContext: SharedContext = { CurrentNode = nil, CurrentSession = 0 }
 
+local function _add_dependency_root(dependency: PotokRoot, dependent: Dependent)
+	table.insert(dependency.dependents, dependent)
+	dependency.dependentsLength += 1
+	dependent.roots[dependency] = true
+end
+
 local function add_dependency(dependency: Dependency, dependent: Dependent)
 	if dependency.type == "Root" then
-		table.insert(dependency.dependents, dependent)
-		dependency.dependentsLength += 1
-		dependent.roots[dependency] = true
+		_add_dependency_root(dependency, dependent)
 	else
 		for root in dependency.roots do
-			table.insert(root.dependents, dependent)
-			root.dependentsLength += 1
-			dependent.roots[root] = true
+			_add_dependency_root(root, dependent)
 		end
 	end
 end
@@ -57,14 +59,14 @@ local function evaluate(SharedContext: SafeSharedContext)
 	return false
 end
 
-local function evaluate_this_node(Node: FlowNode)
+local function evaluate_this_node(Node: PotokNode)
 	local past = SharedContext.CurrentNode
 	SharedContext.CurrentNode = Node
 	evaluate(SharedContext :: SafeSharedContext)
 	SharedContext.CurrentNode = past
 end
 
-local function has_been_evaluated(dependency: FlowNode)
+local function has_been_evaluated(dependency: PotokNode)
 	if SharedContext.CurrentSession == dependency.updaterSession then
 		return true
 	end
@@ -80,7 +82,7 @@ local function use(dependency: Dependency)
 	return dependency.value
 end
 
-local function update_root(Root: FlowRoot)
+local function update_root(Root: PotokRoot)
 	local dependents = Root.dependents
 	local length = Root.dependentsLength
 
