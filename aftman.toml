@@ -4,4 +4,5 @@
 # To add a new tool, add an entry to this table.
 [tools]
 lune = "filiptibell/lune@0.8.3"
+obretka = "crescent-team/obretka@1.0.0"
 # rojo = "rojo-rbx/rojo@6.2.0"
