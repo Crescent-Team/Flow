@@ -1,4 +1,3 @@
---!strict
 local runtime = require("runtime")
 local _add_dependency, _use, update_root, _has_been_evaluated, evaluate_this_node, _SharedContext =
 	runtime.add_dependency,
@@ -19,7 +18,6 @@ local function source<T>(value: T): ReaderWriter<T>
 		type = "Root",
 		value = value,
 		dependents = {},
-		dependentsLength = 0,
 	}
 
 	return function(value: T?)
@@ -71,7 +69,6 @@ end
 local function use<T>(dependency: ReaderWriter<T>): T
 	return _use(dependency(GET_POTOK_INSTANCE :: any))
 end
-
 
 return {
 	use = use,
